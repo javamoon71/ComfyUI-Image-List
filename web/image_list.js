@@ -2,7 +2,7 @@
 import { app } from "../../scripts/app.js";
 import { api } from "../../scripts/api.js";
 
-const THUMB_SIZE = 64;
+const THUMB_SIZE = 128;
 const ADD_BUTTON_HEIGHT = 30;
 const GAP = 4;
 

@@ -11,7 +11,7 @@
 - **캐시**: random Off일 때 `IS_CHANGED`는 선택된 파일 이름 + 수정 시각을 반환한다. 같은 이름의 파일이 덮어써지면 다시 실행된다.
 - **folder_paths 지연 import**: ComfyUI 밖(단위 테스트)에서도 `nodes.py`를 import할 수 있도록 경로 해석 함수 안에서 import한다. 테스트는 `sys.modules`에 가짜 모듈을 넣는다.
 - **노드 키 `ImageList`**: Text List(`TextList`)와 같은 방식으로 지었다. 다른 팩과 키가 겹치면 노드가 덮어써지므로, ComfyUI에서 노드 배지가 이 팩으로 나오는지 확인한다.
-- **목록 UI**: 행 = 번호 | 썸네일(64px) + 파일 이름 | ✕. 목록은 노드 안에서 스크롤, 아래에 "+ 이미지 추가" 버튼 고정. 노드 자동 확장은 하지 않는다(Text List 최종 결정과 같음).
+- **목록 UI**: 행 = 번호 | 썸네일(128px, 처음 64px에서 키움) + 파일 이름 | ✕. 목록은 노드 안에서 스크롤, 아래에 "+ 이미지 추가" 버튼 고정. 노드 자동 확장은 하지 않는다(Text List 최종 결정과 같음).
 
 ## 2026-10-22 drag and drop
 - **두 경로**: 목록(DOM 위젯) 위 드롭은 컨테이너의 `drop` 이벤트로, 노드의 다른 영역(제목, index 위젯) 드롭은 LiteGraph `node.onDragOver`/`onDragDrop`으로 받는다. 업로드는 버튼과 같은 `addFiles`를 쓴다.
