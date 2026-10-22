@@ -13,5 +13,5 @@
 - [x] 단위 테스트 작성 및 통과 (`tests/test_nodes.py`)
 - [x] README 작성
 - [x] 커밋
-- [ ] GitHub 저장소 생성 및 push (사용자 확인 후)
+- [x] GitHub 저장소 생성 및 push
 - [ ] ComfyUI PC에서 실제 동작 확인
