@@ -15,3 +15,9 @@
 - [x] 커밋
 - [x] GitHub 저장소 생성 및 push
 - [ ] ComfyUI PC에서 실제 동작 확인
+
+## Plan 2 — drag and drop 추가
+- [x] 목록 위에 놓은 이미지 파일 업로드 (ComfyUI 기본 드롭 처리 막기)
+- [x] 노드의 다른 영역에 놓아도 추가 (`onDragOver`/`onDragDrop`)
+- [x] README 반영
+- [ ] ComfyUI PC에서 실제 동작 확인

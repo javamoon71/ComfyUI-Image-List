@@ -110,12 +110,11 @@ function createImageListWidget(node, inputName) {
   add.style.cssText = `height:${ADD_BUTTON_HEIGHT - 4}px;flex-shrink:0;cursor:pointer;`;
   container.append(add);
 
-  fileInput.addEventListener("change", async () => {
-    const files = [...fileInput.files];
-    fileInput.value = "";
+  const addFiles = async (files) => {
     add.disabled = true;
     try {
       for (const file of files) {
+        if (!file.type.startsWith("image/")) continue;
         try {
           items.push(await uploadImage(file));
         } catch (e) {
@@ -126,6 +125,31 @@ function createImageListWidget(node, inputName) {
     } finally {
       add.disabled = false;
     }
+  };
+
+  fileInput.addEventListener("change", () => {
+    const files = [...fileInput.files];
+    fileInput.value = "";
+    addFiles(files);
+  });
+
+  // 목록 위에 파일을 끌어다 놓으면 업로드한다. ComfyUI가 이미지를 워크플로로 불러오지 않도록 이벤트 전파를 막는다
+  const hasFiles = (e) => e.dataTransfer?.types?.includes("Files");
+  container.addEventListener("dragover", (e) => {
+    if (!hasFiles(e)) return;
+    e.preventDefault();
+    e.stopPropagation();
+    list.style.outline = "2px dashed var(--input-text)";
+  });
+  container.addEventListener("dragleave", (e) => {
+    if (!container.contains(e.relatedTarget)) list.style.outline = "";
+  });
+  container.addEventListener("drop", (e) => {
+    list.style.outline = "";
+    if (!hasFiles(e)) return;
+    e.preventDefault();
+    e.stopPropagation();
+    addFiles([...e.dataTransfer.files]);
   });
 
   const widget = node.addDOMWidget(inputName, "IMAGE_LIST", container, {
@@ -139,6 +163,7 @@ function createImageListWidget(node, inputName) {
   });
 
   widget.refreshIndexRange = refreshIndexRange;
+  widget.addFiles = addFiles;
   render();
   return { widget };
 }
@@ -152,6 +177,16 @@ app.registerExtension({
   },
   // IMAGE_LIST 위젯이 만들어질 때는 index 위젯이 아직 없어서 노드 생성 후 한 번 더 맞춘다
   nodeCreated(node) {
-    node.widgets?.find((w) => w.type === "IMAGE_LIST")?.refreshIndexRange();
+    const widget = node.widgets?.find((w) => w.type === "IMAGE_LIST");
+    if (!widget) return;
+    widget.refreshIndexRange();
+    // 목록 밖(제목, 다른 위젯 영역)에 놓아도 이 노드에 추가한다
+    node.onDragOver = (e) => !!e.dataTransfer?.types?.includes("Files");
+    node.onDragDrop = (e) => {
+      const files = [...(e.dataTransfer?.files ?? [])].filter((f) => f.type.startsWith("image/"));
+      if (!files.length) return false;
+      widget.addFiles(files);
+      return true;
+    };
   },
 });
